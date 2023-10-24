@@ -27,6 +27,8 @@ grades <- vroom(here("grades.csv"))
 ```
 
 ```{r}
+#| echo: false
+#| message: false
 grades |> summarise(anyNA(Exam))
 is.na(c(1, 2, NA, 4, NA))
 ```
@@ -34,6 +36,8 @@ is.na(c(1, 2, NA, 4, NA))
 ## Question 2 
 
 ```{r}
+#| echo: false
+#| message: false
 grades %>%
   summarise(
     Minimum = min(Exam, na.rm = TRUE),
@@ -50,6 +54,8 @@ not_take_exam_count <- grades %>%
 print(not_take_exam_count)
 ```
 ```{r}
+#| echo: false
+#| message: false
 not_take_exam_count <- grades %>%
   filter(is.na(Exam)) %>%
   nrow()
@@ -60,6 +66,8 @@ cat("The number of students who did not take the final exam is", not_take_exam_c
 ## Question 4 
 
 ```{r}
+#| echo: false
+#| message: false
 ggplot(grades, aes(x = Exam)) +
   geom_histogram() +
   labs(
@@ -69,12 +77,65 @@ ggplot(grades, aes(x = Exam)) +
 ```
 In the second graph we have excluding the na to avoid the error message from ggplot. 
 
+```{r}
+#| echo: false
+#| message: false
+grades_whitout_na <- grades%>%
+  filter(!is.na(Exam)) %>%
+print(grades_whitout_na)
+
+ggplot(grades_whitout_na, aes(x = Exam )) + geom_histogram(binwidth = 0.7, fill = "darkblue") +  labs(
+    title = "Distribution of Exam Grades (Excluding NA)",
+    x = "Exam Grades",
+    y = "Frequency")
+```
+
 ## Question 5
 
 ```{r}
+#| echo: false
+#| message: false
 students_by_group <- grades %>%
   group_by(Group) %>%
   summarise(Count = n())
 kable(students_by_group)
 ```
+## Question 6 
 
+```{r}
+#| echo: false
+#| message: false
+ggplot(grades, aes(x = Group, fill = Group)) + geom_bar() + 
+   theme(axis.text.x = element_text(angle = 45, hjust = 1))
+```
+
+## Question 7 
+
+```{r}
+ggplot(grades_whitout_na, aes(x = Group, y = Exam, fill = Group)) +
+  geom_boxplot() +
+  labs(
+    title = "Distribution of Exam Grades by Group",
+    x = "Group",
+    y = "Exam Grades"
+  ) +  theme(axis.text.x = element_text(angle = 45, hjust = 1))
+```
+
+## Question 8 
+
+```{r}
+missed_counts <- grades %>%
+  group_by(Group) %>%
+  summarise(Count_Missed_Exam = sum(is.na(Exam)))
+
+missed_counts <- table(grades$Group, is.na(grades$Exam))
+
+missed_counts <- as.data.frame(missed_exam_counts)
+colnames(missed_counts) <- c("Group", "Count_Missed_Exam")
+print(missed_counts)
+```
+## Question 9 
+
+```{r}
+ggplot(missed_counts, aes(x = Group, y = Count_Exam)) + geom
+````
