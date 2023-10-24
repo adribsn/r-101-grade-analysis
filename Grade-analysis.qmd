@@ -1,0 +1,59 @@
+---
+title: "Grade analysis"
+author: "Adrien Bouisson"
+format: html
+editor: visual
+---
+
+```{r}
+#| echo: false
+#| message: false
+here::i_am("Grade analysis.Rproj")
+library(here)
+library(dplyr)
+library(ggplot2)
+library(tidyr)
+library(vroom)
+library(knitr)
+```
+
+# Exercice Data analysis 
+
+## Question 1 
+
+```{r}
+#| message: false
+grades <- vroom(here("grades.csv"))
+```
+
+```{r}
+grades |> summarise(anyNA(Exam))
+is.na(c(1, 2, NA, 4, NA))
+```
+
+## Question 2 
+
+```{r}
+grades %>%
+  summarise(
+    Minimum = min(Exam, na.rm = TRUE),
+    Maximum = max(Exam, na.rm = TRUE),
+    Median = median(Exam, na.rm = TRUE),
+    Mean = mean(Exam, na.rm = TRUE)
+  ) %>%
+  kable()
+```
+## Question 3 
+```{r}
+not_take_exam_count <- grades %>%
+  count(is.na(Exam))
+print(not_take_exam_count)
+```
+```{r}
+not_take_exam_count <- grades %>%
+  filter(is.na(Exam)) %>%
+  nrow()
+cat("The number of students who did not take the final exam is", not_take_exam_count)
+
+```
+
