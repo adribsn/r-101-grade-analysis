@@ -67,13 +67,14 @@ ggplot(grades, aes(x = Exam)) +
     x = "Exam Grades whitout na",
     y = "Frequency")
 ```
-```{r}
-ggplot(grades, aes(x = Exam)) +
-  geom_histogram(data = grades %>% filter(!is.na(Exam))) +
-  labs(
-    title = "Distribution of Exam Grades (Excluding NA)",
-    x = "Exam Grades",
-    y = "Frequency"
-  )
-```
 In the second graph we have excluding the na to avoid the error message from ggplot. 
+
+## Question 5
+
+```{r}
+students_by_group <- grades %>%
+  group_by(Group) %>%
+  summarise(Count = n())
+kable(students_by_group)
+```
+
