@@ -15,11 +15,12 @@ library(ggplot2)
 library(tidyr)
 library(vroom)
 library(knitr)
+library(stringr)
 ```
 
-# Exercice Data analysis 
+# Exercice Data analysis
 
-## Question 1 
+## Question 1
 
 ```{r}
 #| message: false
@@ -33,7 +34,7 @@ grades |> summarise(anyNA(Exam))
 is.na(c(1, 2, NA, 4, NA))
 ```
 
-## Question 2 
+## Question 2
 
 ```{r}
 #| echo: false
@@ -47,12 +48,15 @@ grades %>%
   ) %>%
   kable()
 ```
-## Question 3 
+
+## Question 3
+
 ```{r}
 not_take_exam_count <- grades %>%
   count(is.na(Exam))
 print(not_take_exam_count)
 ```
+
 ```{r}
 #| echo: false
 #| message: false
@@ -63,7 +67,7 @@ cat("The number of students who did not take the final exam is", not_take_exam_c
 
 ```
 
-## Question 4 
+## Question 4
 
 ```{r}
 #| echo: false
@@ -75,7 +79,8 @@ ggplot(grades, aes(x = Exam)) +
     x = "Exam Grades whitout na",
     y = "Frequency")
 ```
-In the second graph we have excluding the na to avoid the error message from ggplot. 
+
+In the second graph we have excluding the na to avoid the error message from ggplot.
 
 ```{r}
 #| echo: false
@@ -100,7 +105,8 @@ students_by_group <- grades %>%
   summarise(Count = n())
 kable(students_by_group)
 ```
-## Question 6 
+
+## Question 6
 
 ```{r}
 #| echo: false
@@ -109,9 +115,11 @@ ggplot(grades, aes(x = Group, fill = Group)) + geom_bar() +
    theme(axis.text.x = element_text(angle = 45, hjust = 1))
 ```
 
-## Question 7 
+## Question 7
 
 ```{r}
+#| echo: false
+#| message: false
 ggplot(grades_whitout_na, aes(x = Group, y = Exam, fill = Group)) +
   geom_boxplot() +
   labs(
@@ -121,21 +129,125 @@ ggplot(grades_whitout_na, aes(x = Group, y = Exam, fill = Group)) +
   ) +  theme(axis.text.x = element_text(angle = 45, hjust = 1))
 ```
 
-## Question 8 
+## Question 8
 
 ```{r}
-missed_counts <- grades %>%
+missed_exam_counts <- grades %>%
   group_by(Group) %>%
   summarise(Count_Missed_Exam = sum(is.na(Exam)))
-
-missed_counts <- table(grades$Group, is.na(grades$Exam))
-
-missed_counts <- as.data.frame(missed_exam_counts)
-colnames(missed_counts) <- c("Group", "Count_Missed_Exam")
-print(missed_counts)
+missed_exam_counts <- table(grades$Group, is.na(grades$Exam))
+missed_exam_counts <- as.data.frame(missed_exam_counts)
+colnames(missed_exam_counts) <- c("Group", "Count_Missed_Exam")
+missed_exam_counts
 ```
-## Question 9 
+
+## Question 9
 
 ```{r}
-ggplot(missed_counts, aes(x = Group, y = Count_Exam)) + geom
-````
+library(dplyr)
+
+missed_exam_counts <- grades %>%
+  summarise(Group, Count_Missed_Exam = sum(is.na(Exam)))
+missed_exam_counts
+
+```
+
+```{r}
+library(ggplot2)
+
+ggplot(missed_exam_counts, aes(x = Group, y = Count_Missed_Exam)) +
+  geom_col(fill = "blue") +
+  labs(
+    title = "Number of Students Who Missed the Exam by Group",
+    x = "Group",
+    y = "Count"
+  ) +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))
+
+```
+
+## Question 10
+
+```{r}
+new_grades <- grades %>% pivot_longer(
+  cols = Exam | starts_with("MCQ_") |
+    starts_with("Online_MCQ"), 
+  names_to = "name",
+  values_to = "value"
+)
+```
+
+## Question 11
+
+```{r}
+missing_grades_per_student <- new_grades %>%
+  group_by(Id) %>%
+  summarise(missing_grades_per_student = sum(is.na(value)))
+missing_grades_per_student
+```
+
+## Question 12
+
+```{r}
+ggplot(missing_grades_per_student, aes(x= missing_grades_per_student)) + geom_histogram(bins = 30, binwidth = 0.5, fill = "blue")
+```
+
+```{r}
+ggplot(missing_grades_per_student, aes(x = missing_grades_per_student)) +
+  geom_density(bw = "SJ") +
+  labs(
+    title = "Distribution of Missing Grades per Student",
+    x = "Total Missing Grades",
+    y = "Density"
+  )
+```
+
+## Question 13
+
+```{r}
+missed_exam_counts_grp <- new_grades %>%
+  filter(str_starts(name, "Exam")) %>%
+  group_by(Group) %>%
+  summarise(missed_exam_counts = sum(is.na(Exam)))
+missed_exam_counts_grp
+```
+
+## Question 14
+
+```{r}
+missing_online_test_grades <- new_grades %>%
+  filter(str_starts(name, "Online_MCQ_")) %>%
+  group_by(Id) %>%
+  summarise(Count_Missed_Online_Test_Grades = sum(is.na(new_grades)))
+missing_online_test_grades
+```
+
+nombre de fois où ils ont pas fait le test en ligne
+
+## Question 15
+
+```{r}
+missing_online_test_grades <- new_grades %>%
+  filter(str_starts(name, "Online_MCQ_")) %>%
+  group_by(Id) %>%
+  summarise(Count_Missed_Online_Test_Grades = sum(is.na(Grade)))
+
+grades_with_missing_online <- new_grades%>%
+  left_join(missing_online_test_grades, by = "Id")
+
+# Calculate the average exam grade per group conditioned by the number of missing online test grades
+exam_vs_missing_online <- grades_with_missing_online %>%
+  group_by(Count_Missed_Online_Test_Grades) %>%
+  summarise(Average_Exam_Grade = mean(Exam, na.rm = TRUE))
+
+# Create a bar plot to visualize the distribution
+ggplot(exam_vs_missing_online, aes(x = factor(Count_Missed_Online_Test_Grades), y = Average_Exam_Grade)) +
+  geom_bar(stat = "identity", fill = "blue") +
+  labs(
+    title = "Average Exam Grade Conditioned by Missing Online Test Grades",
+    x = "Missing Online Test Grades",
+    y = "Average Exam Grade"
+  ) +
+  scale_x_discrete(labels = seq(0, max(exam_vs_missing_online$Count_Missed_Online_Test_Grades), 1))
+
+```
