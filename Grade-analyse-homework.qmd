@@ -1,0 +1,35 @@
+---
+title: "Grade analysis homework"
+format: html
+editor: visual
+---
+```{r}
+#| echo: false
+#| message: false
+here::i_am("Grade analysis.Rproj")
+library(here)
+library(dplyr)
+library(ggplot2)
+library(tidyr)
+library(vroom)
+library(knitr)
+library(stringr)
+```
+
+# Question 1 
+
+## Introduction 
+```{r}
+#| message: false
+grades <- vroom(here("grades.csv"))
+```
+
+## Example 
+```{r}
+#| echo: false
+#| message: false
+grades |> summarise(anyNA(Exam))
+is.na(c(1, 2, NA, 4, NA))
+```
+
+
