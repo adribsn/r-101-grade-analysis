@@ -203,4 +203,17 @@ missed_exam_counts_2 <- exam_new_grades %>% group_by(Group) %>%
 knitr::kable(missed_exam_counts_2)
 ```
 
+#Question 14 
+
+```{r}
+online_QCM <- grades_long |> filter(str_starts(name, "Online_MCQ_"))
+
+na_online_QCM_per_student <- online_QCM %>%
+  group_by(Id) %>%
+  summarise(nber_na_online_test = sum(is.na(value)))
+
+knitr::kable(na_online_QCM_per_student)
+```
+```
+
 
