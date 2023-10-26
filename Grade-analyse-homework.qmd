@@ -32,4 +32,19 @@ grades |> summarise(anyNA(Exam))
 is.na(c(1, 2, NA, 4, NA))
 ```
 
+## Question 2 
+
+```{r}
+#| echo: false
+#| message: false
+grades %>%
+  summarise(
+    Minimum = min(Exam, na.rm = TRUE),
+    Maximum = max(Exam, na.rm = TRUE),
+    Median = median(Exam, na.rm = TRUE),
+    Mean = mean(Exam, na.rm = TRUE)
+  ) %>%
+  kable()
+```
+
 
