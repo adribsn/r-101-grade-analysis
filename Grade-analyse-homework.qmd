@@ -170,4 +170,13 @@ grades_long <- grades %>% pivot_longer(
 knitr::kable(grades_long)
 ```
 
+# Question 11 
+
+```{r}
+missing_grades_per_student <- grades_long %>%
+  group_by(Id) %>%
+  summarise(missing_grades_per_student = sum(is.na(value)))
+knitr::kable(missing_grades_per_student)
+```
+
 
