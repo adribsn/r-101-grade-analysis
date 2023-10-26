@@ -179,4 +179,20 @@ missing_grades_per_student <- grades_long %>%
 knitr::kable(missing_grades_per_student)
 ```
 
+# Question 12 
+
+```{r}
+ggplot(missing_grades_per_student, aes(x = missing_grades_per_student )) + geom_histogram()
+```
+
+```{r}
+ggplot(missing_grades_per_student, aes(x = missing_grades_per_student)) +
+  geom_density(bins = 30, binwidth = 0.5, fill = "green") +
+  labs(
+    title = "Distribution of Missing Grades per Student",
+    x = "Total Missing Grades",
+    y = "Density"
+  )
+```
+
 
