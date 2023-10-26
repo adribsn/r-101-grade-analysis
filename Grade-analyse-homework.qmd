@@ -194,5 +194,13 @@ ggplot(missing_grades_per_student, aes(x = missing_grades_per_student)) +
     y = "Density"
   )
 ```
+# Question 13 
+
+```{r}
+exam_new_grades <- grades_long |> filter(str_starts(name, "Exam"))
+missed_exam_counts_2 <- exam_new_grades %>% group_by(Group) %>%
+  summarise(nber_na_exam2 = sum(is.na(value)))
+knitr::kable(missed_exam_counts_2)
+```
 
 
