@@ -82,6 +82,18 @@ Exam_without_na <- grades |> filter(!is.na(Exam))
 Exam_without_na |> ggplot(aes(x = Exam)) +
   geom_histogram(binwidth = 0.7, fill = "darkblue")
 ```
+## Question 5 
+
+```{r}
+#| echo: false
+#| message: false
+students_by_group <- grades %>%
+  group_by(Group) %>%
+  summarise(Count = n())
+kable(students_by_group)
+```
+We have compute the number of students in each Group and include the results in  document
+as a table. 
 
 
 
