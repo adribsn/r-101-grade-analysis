@@ -3,6 +3,7 @@ title: "Grade analysis homework"
 format: html
 editor: visual
 ---
+
 ```{r}
 #| echo: false
 #| message: false
@@ -16,15 +17,17 @@ library(knitr)
 library(stringr)
 ```
 
-# Question 1 
+# Question 1
 
-## Introduction 
+## Introduction
+
 ```{r}
 #| message: false
 grades <- vroom(here("grades.csv"))
 ```
 
-## Example 
+## Example
+
 ```{r}
 #| echo: false
 #| message: false
@@ -32,7 +35,7 @@ grades |> summarise(anyNA(Exam))
 is.na(c(1, 2, NA, 4, NA))
 ```
 
-# Question 2 
+# Question 2
 
 ```{r}
 #| echo: false
@@ -47,7 +50,7 @@ grades %>%
   kable()
 ```
 
-# Question 3 
+# Question 3
 
 ```{r}
 not_take_exam_count <- grades %>% count(is.na(Exam))
@@ -62,7 +65,7 @@ cat("The number of students who did not take the final exam is", not_take_exam_c
 
 ```
 
-# Question 4 
+# Question 4
 
 ```{r}
 #| echo: false
@@ -74,7 +77,8 @@ ggplot(grades, aes(x = Exam)) +
     x = "Exam Grades whitout na",
     y = "Frequency")
 ```
-In the second graph we have excluding the na to avoid the error message from ggplot. 
+
+In the second graph we have excluding the na to avoid the error message from ggplot.
 
 ```{r}
 Exam_without_na <- grades |> filter(!is.na(Exam))
@@ -82,7 +86,8 @@ Exam_without_na <- grades |> filter(!is.na(Exam))
 Exam_without_na |> ggplot(aes(x = Exam)) +
   geom_histogram(binwidth = 0.7, fill = "darkblue")
 ```
-# Question 5 
+
+# Question 5
 
 ```{r}
 #| echo: false
@@ -92,10 +97,10 @@ students_by_group <- grades %>%
   summarise(Count = n())
 kable(students_by_group)
 ```
-We have compute the number of students in each Group and include the results in  document
-as a table. 
 
-# Question 6 
+We have compute the number of students in each Group and include the results in document as a table.
+
+# Question 6
 
 ```{r}
 #| echo: false
@@ -104,9 +109,9 @@ ggplot(grades, aes(x = Group, fill = Group)) + geom_bar() +
    theme(axis.text.x = element_text(angle = 45, hjust = 1))
 ```
 
-# Question 7 
+# Question 7
 
-## First representation 
+## First representation
 
 ```{r}
 #| echo: false
@@ -116,9 +121,10 @@ ggplot(grades, aes(x = Exam, fill = Group)) +
   geom_rug(alpha = 0.03, linewidth = 1.5) +
   facet_wrap(~Group)
 ```
+
 This graph enable to show the distribution of grades at Exam conditioned by the group.
 
-## Second representation 
+## Second representation
 
 ```{r}
 #| echo: false
@@ -128,7 +134,7 @@ ggplot(grades, aes(x = Group, y=Exam, fill = Group)) +
 
 ```
 
-This graph enable to show the distribution of grades at Exam conditioned by the group, while the first separates the group in each box. 
+This graph enable to show the distribution of grades at Exam conditioned by the group, while the first separates the group in each box.
 
 # Question 8
 
@@ -139,10 +145,17 @@ missed_exam_counts <- grades %>%
 
 knitr::kable(missed_exam_counts)
 ```
+It shows how many grades it missed in each group.
 
-It shows how many grades it missed in each group. 
+# Question 9
 
+```{r}
+all_Groups <- inner_join(grades, missed_exam_counts, by=join_by("Group"))
+```
 
+```{r}
+all_Groups <- inner_join(grades, missed_exam_counts, by=join_by("Group"))
 
-
-
+ggplot(all_Groups, aes(x = Group, y = missed_exam_counts)) +
+  geom_col() + theme(axis.text.x = element_text(angle = 45, hjust = 1))
+```
