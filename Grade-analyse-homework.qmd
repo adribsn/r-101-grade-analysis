@@ -154,8 +154,20 @@ all_Groups <- inner_join(grades, missed_exam_counts, by=join_by("Group"))
 ```
 
 ```{r}
-all_Groups <- inner_join(grades, missed_exam_counts, by=join_by("Group"))
-
 ggplot(all_Groups, aes(x = Group, y = missed_exam_counts)) +
   geom_col() + theme(axis.text.x = element_text(angle = 45, hjust = 1))
 ```
+
+Here, we have used inner_join to combine data (grades and missed exam counts) to create a single column for each group instead of two. 
+
+# Question 10 
+
+```{r}
+grades_long <- grades %>% pivot_longer(
+  cols = Exam | starts_with("MCQ_") | starts_with("Online_MCQ_"),
+  names_to = "name",
+  values_to = "value")
+knitr::kable(grades_long)
+```
+
+
