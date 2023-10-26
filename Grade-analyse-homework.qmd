@@ -47,4 +47,18 @@ grades %>%
   kable()
 ```
 
+## Question 3 
+
+```{r}
+not_take_exam_count <- grades %>% count(is.na(Exam))
+print(not_take_exam_count)
+
+#| echo: false
+#| message: false
+not_take_exam_count <- grades %>%
+  filter(is.na(Exam)) %>%
+  nrow()
+cat("The number of students who did not take the final exam is", not_take_exam_count)
+
+```
 
