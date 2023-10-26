@@ -207,13 +207,42 @@ knitr::kable(missed_exam_counts_2)
 
 ```{r}
 online_QCM <- grades_long |> filter(str_starts(name, "Online_MCQ_"))
-
 na_online_QCM_per_student <- online_QCM %>%
   group_by(Id) %>%
-  summarise(nber_na_online_test = sum(is.na(value)))
-
+  summarise(nber_na_online_QCM = sum(is.na(value)))
 knitr::kable(na_online_QCM_per_student)
 ```
+
+# Question 15 
+
+```{r}
+grades_with_na_online_QCM <- grades |>
+  rowwise() |>
+  mutate(na_online_QCM_per_student_2 = sum(is.na(c_across(starts_with("Online_MCQ_")))))
 ```
 
+It's the same things, we can do both. 
+
+## Geom_histogram 
+```{r}
+grades_with_na_online_QCM |> ggplot(aes(x = Exam, fill = , color = na_online_QCM_per_student_2)) + geom_histogram(binwidth = 1, fill = "blue", color = "black")
+```
+## Geom boxplot 
+
+```{r}
+ggplot(grades_with_na_online_QCM, aes(x = na_online_QCM_per_student_2, y= Exam, fill = na_online_QCM_per_student_2 )) +
+  geom_boxplot(
+    title = "Distribution of Exam Grades by Missing Online Test Grades"
+  )
+```
+## Geom density 
+
+```{r}
+grades_with_na_online_QCM |> ggplot(aes(x = Exam, group = na_online_QCM_per_student_2, color = na_online_QCM_per_student_2))+ geom_density(bw = "SJ", title = "Distribution of Exam Grades by Missing Online Test Grades")
+```
+## Geom bar 
+
+```{r}
+ggplot(grades_with_na_online_QCM, aes(x = Exam, fill = na_online_QCM_per_student_2, color = na_online_QCM_per_student_2)) + geom_bar(binwidth = 1, fill = "blue", color = "black") 
+```
 
