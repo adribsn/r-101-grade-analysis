@@ -32,7 +32,7 @@ grades |> summarise(anyNA(Exam))
 is.na(c(1, 2, NA, 4, NA))
 ```
 
-## Question 2 
+# Question 2 
 
 ```{r}
 #| echo: false
@@ -47,7 +47,7 @@ grades %>%
   kable()
 ```
 
-## Question 3 
+# Question 3 
 
 ```{r}
 not_take_exam_count <- grades %>% count(is.na(Exam))
@@ -62,7 +62,7 @@ cat("The number of students who did not take the final exam is", not_take_exam_c
 
 ```
 
-## Question 4 
+# Question 4 
 
 ```{r}
 #| echo: false
@@ -82,7 +82,7 @@ Exam_without_na <- grades |> filter(!is.na(Exam))
 Exam_without_na |> ggplot(aes(x = Exam)) +
   geom_histogram(binwidth = 0.7, fill = "darkblue")
 ```
-## Question 5 
+# Question 5 
 
 ```{r}
 #| echo: false
@@ -103,6 +103,34 @@ as a table.
 ggplot(grades, aes(x = Group, fill = Group)) + geom_bar() + 
    theme(axis.text.x = element_text(angle = 45, hjust = 1))
 ```
+
+# Question 7 
+
+## First representation 
+
+```{r}
+#| echo: false
+#| message: false
+ggplot(grades, aes(x = Exam, fill = Group)) +
+  geom_histogram(bins = 20) +
+  geom_rug(alpha = 0.03, linewidth = 1.5) +
+  facet_wrap(~Group)
+```
+This graph enable to show the distribution of grades at Exam conditioned by the group.
+
+## Second representation 
+
+```{r}
+#| echo: false
+#| message: false
+ggplot(grades, aes(x = Group, y=Exam, fill = Group)) +
+  geom_boxplot() +  theme(axis.text.x = element_text(angle = 45, hjust = 1))
+
+```
+
+This graph enable to show the distribution of grades at Exam conditioned by the group, while the first separates the group in each box. 
+
+
 
 
 
