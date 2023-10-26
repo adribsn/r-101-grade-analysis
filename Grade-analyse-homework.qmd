@@ -245,4 +245,23 @@ grades_with_na_online_QCM |> ggplot(aes(x = Exam, group = na_online_QCM_per_stud
 ```{r}
 ggplot(grades_with_na_online_QCM, aes(x = Exam, fill = na_online_QCM_per_student_2, color = na_online_QCM_per_student_2)) + geom_bar(binwidth = 1, fill = "blue", color = "black") 
 ```
+In this approach, we first calculate the number of missing online test grades using the long-format data and then join these results with the original 'grades' data frame before creating the histogram.
+
+Both approaches will allow you to visualize the distribution of Exam grades conditioned by the number of missing online test grades. Choose the one that best fits your data structure and workflow.
+
+## Question 16 
+
+```{r}
+grades_with_na_qcm <- grades |>
+  rowwise() |>
+  mutate(na_qcm_per_student = sum(is.na(c_across(starts_with("MCQ_")))))
+
+grades_with_na_qcm2 <- grades_with_na_qcm |> mutate(Missed = if (na_qcm_per_student == 0) Missed <- FALSE else Missed <- TRUE)
+
+QCM_missed_per_student <- grades_with_na_qcm2 |> select(Id, Missed)
+
+knitr::kable(QCM_missed_per_student)
+```
+
+## Question 17 
 
