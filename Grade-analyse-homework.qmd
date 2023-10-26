@@ -130,6 +130,18 @@ ggplot(grades, aes(x = Group, y=Exam, fill = Group)) +
 
 This graph enable to show the distribution of grades at Exam conditioned by the group, while the first separates the group in each box. 
 
+# Question 8
+
+```{r}
+missed_exam_counts <- grades %>%
+  group_by(Group) %>%
+  summarise(missed_exam_counts = sum(is.na(Exam)))
+
+knitr::kable(missed_exam_counts)
+```
+
+It shows how many grades it missed in each group. 
+
 
 
 
