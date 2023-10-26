@@ -62,3 +62,26 @@ cat("The number of students who did not take the final exam is", not_take_exam_c
 
 ```
 
+## Question 4 
+
+```{r}
+#| echo: false
+#| message: false
+ggplot(grades, aes(x = Exam)) +
+  geom_histogram() +
+  labs(
+    title = "Distribution of Grades at Exam",
+    x = "Exam Grades whitout na",
+    y = "Frequency")
+```
+In the second graph we have excluding the na to avoid the error message from ggplot. 
+
+```{r}
+Exam_without_na <- grades |> filter(!is.na(Exam))
+
+Exam_without_na |> ggplot(aes(x = Exam)) +
+  geom_histogram(binwidth = 0.7, fill = "darkblue")
+```
+
+
+
