@@ -52,10 +52,9 @@ grades %>%
 ## Question 3
 
 ```{r}
-not_take_exam_count <- grades %>%
-  count(is.na(Exam))
-print(not_take_exam_count)
+not_take_exam_count <- grades |> count(is.na(Exam))
 ```
+There are `r not_take_exam_count[2,2]` students who did not take the exam
 
 ```{r}
 #| echo: false
@@ -83,11 +82,11 @@ ggplot(grades, aes(x = Exam)) +
 In the second graph we have excluding the na to avoid the error message from ggplot.
 
 ```{r}
-#| echo: false
-#| message: false
-grades_whitout_na <- grades%>%
-  filter(!is.na(Exam)) %>%
-print(grades_whitout_na)
+na_exam_per_group <- grades %>%
+  group_by(Group) %>%
+  summarise(nber_na_exam = sum(is.na(Exam)))
+
+knitr::kable(na_exam_per_group)
 
 ggplot(grades_whitout_na, aes(x = Exam )) + geom_histogram(binwidth = 0.7, fill = "darkblue") +  labs(
     title = "Distribution of Exam Grades (Excluding NA)",
