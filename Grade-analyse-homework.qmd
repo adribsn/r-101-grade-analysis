@@ -264,4 +264,21 @@ knitr::kable(QCM_missed_per_student)
 ```
 
 ## Question 17 
+```{r}
+nber_missed_mcq_per_group <- grades_with_na_qcm2 |>
+  group_by(Group) |>
+  count(Missed)
+
+p_na_mcq_group <- inner_join(nber_missed_mcq_per_group, students_by_group, by = join_by(Group), suffix = c("_missed_mcq", "_students"))
+
+p_na_mcq_group_true <- p_na_mcq_group |> filter(Missed==T)
+
+p_na_mcq_group2 <- p_na_mcq_group_true |>
+  rowwise() |>
+  mutate(P_missed = (n_missed_mcq / n_students) * 100)
+
+p_na_mcq_group3 <- p_na_mcq_group2 |> select(Group, P_missed)
+
+knitr::kable(p_na_mcq_group3)
+```
 
