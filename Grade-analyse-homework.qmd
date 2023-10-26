@@ -95,5 +95,14 @@ kable(students_by_group)
 We have compute the number of students in each Group and include the results in  document
 as a table. 
 
+# Question 6 
+
+```{r}
+#| echo: false
+#| message: false
+ggplot(grades, aes(x = Group, fill = Group)) + geom_bar() + 
+   theme(axis.text.x = element_text(angle = 45, hjust = 1))
+```
+
 
 
