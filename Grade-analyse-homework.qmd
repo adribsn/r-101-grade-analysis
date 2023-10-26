@@ -273,12 +273,41 @@ p_na_mcq_group <- inner_join(nber_missed_mcq_per_group, students_by_group, by = 
 
 p_na_mcq_group_true <- p_na_mcq_group |> filter(Missed==T)
 
-p_na_mcq_group2 <- p_na_mcq_group_true |>
-  rowwise() |>
-  mutate(P_missed = (n_missed_mcq / n_students) * 100)
+p_na_mcq_group2 <- p_na_mcq_group_true
 
-p_na_mcq_group3 <- p_na_mcq_group2 |> select(Group, P_missed)
+p_na_mcq_group3 <- p_na_mcq_group 
 
 knitr::kable(p_na_mcq_group3)
 ```
+## Question 18 
+
+```{r}
+average_exam_per_group <- grades |>
+  group_by(Group) |>
+  summarise(mean_exam = mean(Exam, na.rm=T))
+
+exam_per_group <- grades |>
+  group_by(Group) |>
+  count(Exam)
+
+exam_per_group_2 <- inner_join(exam_per_group, students_by_group, by = join_by(Group), suffix = c("_exam", "_students"))
+
+mean_exam_per_group <- exam_per_group_2 |> group_by(Group) |> mutate(mean_exam = sum(Exam, na.rm=T)/n_students)
+
+mean_exam_per_group2 <- mean_exam_per_group |> select(Group, mean_exam)
+```
+```{r}
+mean_exam_missed_mcq <- inner_join(average_exam_per_group, p_na_mcq_group3)
+```
+
+```{r}
+set.seed(30)
+mean_exam_missed_mcq |> ggplot(aes(x = P_missed, y = mean_exam, color = mean_exam, size = P_missed)) +
+  geom_jitter(alpha = 0.5, width = 0.01, height = 0.01) +
+  xlab("percentage of missed MCQ_xx grade per group") +
+  ylab("average grade at the Exam per group") +
+  scale_size_continuous("average grade at the Exam per group") +
+  scale_color_viridis_c("percentage of missed MCQ_xx grade per group")
+```
+
 
